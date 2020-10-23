@@ -172,8 +172,13 @@ class AutoEntityLabelManager implements AutoEntityLabelManagerInterface {
       $label = $this->getAlternativeLabel();
     }
 
-    $label = mb_substr($label, 0, 255);
     $label_name = $this->getLabelName();
+    $field_settings = $this->entity->$label_name->getSettings();
+    $length = 255;
+    if ($field_settings && array_key_exists('max_length', $field_settings)) {
+      $length = $field_settings['max_length'];
+    }
+    $label = mb_substr($label, 0, $length);
     $this->entity->$label_name->setValue($label);
 
     $this->autoLabelApplied = TRUE;
